@@ -1,0 +1,42 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <div formGroupName="userGroup">
+    <label for="userName">Name : </label>
+    <input type="text" formControlName="userName" /><br /><br />
+
+    <label for="userPWD">Passwd : </label>
+    <input type="tel" formControlName="userPWD" /><br />
+    <br />
+  </div>
+  <div formGroupName="recommandationGroup" [hidden]="userGroup.invalid">
+    <label for="recommandation-email">recommandation email: </label>
+    <input type="email" formControlName="recommandationEmail" />
+    <span [hidden]="!recommandationEmail.invalid"> Mail 格式錯誤</span><br />
+    <div formArrayName="team">
+      <!-- ng for 要限制顯示上限數量可以使用 slice 屬性，
+           用法為使用 | 符號 => | slice:0:3 表示顯示第 0 到 2 筆共 3 次迴圈-->
+      <!-- ng for 其他內建變數說明
+       *index：整數值；代表目前資料在陣列中的index
+       *first：布林值；代表目前資料是否為第一筆
+       *last：布林值；代表目前資料是否為最後一筆
+       *even：布林值；代表目前資料的index是否為第偶數筆
+       *odd：布林值；代表目前資料的index是否為第奇數筆 -->
+      <input
+        type="text"
+        *ngFor="
+          let item of $any(myForm.controls).recommandationGroup.controls.team.controls | slice:0:3;
+          let i = index
+        "
+        [formControlName]="i"
+        [attr.disabled]="!item.isRequire"
+      />
+    </div>
+  </div>
+
+  <button [disabled]="myForm.invalid" type="submit">
+    submit
+  </button>
+  <br />
+  <br />
+  <hr />
+  <pre>{{ myForm.value | json }}</pre>
+</form>
